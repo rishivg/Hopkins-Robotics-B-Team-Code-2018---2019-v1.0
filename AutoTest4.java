@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -179,9 +180,8 @@ public class AutoTest4 extends LinearOpMode {
         detector.ratioScorer.weight = 15;
         detector.ratioScorer.perfectRatio = 1.0;
 
-        detector.enable(); // Start detector
-
-
+        //detector.enable(); // Start detector
+        detector2.enable();
 
 
         //Reset timer
@@ -193,12 +193,8 @@ public class AutoTest4 extends LinearOpMode {
 
         //detach();
 
-        while (targetVisible = false) {
-
-            turnClock(0.1,30000);
-
-        }
-        autoDrive(36, 36, 0.4, "RIGHT");
+        turnCountClock(0.2, 1390);
+        autoDrive(36, 36, 0.1, "RIGHT");
 
         /*
         while (detector.getCurrentOrder().toString() == "UNKNOWN") {
@@ -247,10 +243,6 @@ public class AutoTest4 extends LinearOpMode {
         }
 
         */
-
-
-
-
 
 
         //Assume we can't find a target
@@ -302,7 +294,10 @@ public class AutoTest4 extends LinearOpMode {
 
     }
 
+
     public void autoDrive(double desiredX, double desiredY, double speed, String lookat) {
+
+        telemetry.addLine("INITIAL BOI");
 
         double Protate = 0;
         double stick_x = 0; //Accounts for Protate when limiting magnitude to be less than 1
@@ -328,6 +323,8 @@ public class AutoTest4 extends LinearOpMode {
                 Protate = 0;
             }
 
+            telemetry.addLine("HELP PLZ");
+
             double stick_y = speed * Math.sqrt(Math.pow(1 - Math.abs(Protate), 2) / 2);
 
             theta = Math.atan2(stick_y, stick_x) + Math.PI / 4 - gyroAngle;
@@ -340,6 +337,8 @@ public class AutoTest4 extends LinearOpMode {
             telemetry.addData("Back Left", Px - Protate);
             telemetry.addData("Back Right", Py + Protate);
             telemetry.addData("Front Right", Px + Protate);
+
+            telemetry.addLine("YAY IT WOOOOOORKED ");
 
             goat.front_left.setPower(Py - Protate);
             goat.back_left.setPower(Px - Protate);
@@ -410,6 +409,17 @@ public class AutoTest4 extends LinearOpMode {
 
     }
 
+    public void turnClock(double refSpeed) {
+
+        double speed = refSpeed;
+
+        goat.front_left.setPower(speed);
+        goat.back_left.setPower(speed);
+        goat.back_right.setPower(-speed);
+        goat.front_right.setPower(-speed);
+
+    }
+
     public void turnClock(double refSpeed, long refTime) {
 
         double speed = refSpeed;
@@ -421,6 +431,26 @@ public class AutoTest4 extends LinearOpMode {
         goat.front_right.setPower(-speed);
 
         sleep(time);
+
+    }
+
+    public void turnCountClock(double refSpeed) {
+
+        double speed = refSpeed;
+
+        goat.front_left.setPower(-1 * speed);
+        goat.back_left.setPower(-1 * speed);
+        goat.back_right.setPower(speed);
+        goat.front_right.setPower(speed);
+
+    }
+
+    public void stopMotors() {
+
+        goat.front_left.setPower(0);
+        goat.back_left.setPower(0);
+        goat.back_right.setPower(0);
+        goat.front_right.setPower(0);
 
     }
 
